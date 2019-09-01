@@ -6,6 +6,9 @@ const userRoute = require('./server-side/src/routes/user');
 
 app.use('/user', userRoute);
 
+app.get('/', function(req, res){
+    res.send('HEllow World');
+})
 mongoose
     .connect('mongodb+srv://subarsh:' + process.env.MONGO_ATLAS_PWD + '@chat-db-sefmf.mongodb.net/test?retryWrites=true&w=majority',
         {

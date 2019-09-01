@@ -62,45 +62,51 @@ app.post('/login', function(req, res){
         .findOne({ email: email })
         .exec()
         .then(function(user){
-            if(user.length < 1){
-                return res.status(401).json({
-                        message: 'Auth Failed'
-                })
-            }
-            bcrypt.compare(password, user.password, function(err, response){
-                if(err){
-                    return res.status(500).json({
-                         message: 'Auth Failed'
-                    })
-                }else if(response){
-                    jwt
-                        .sign({
-                            email: user.email,
-                            id: user._id
-                        },
-                        process.env.JWT_KEY,
-                        {
-                            expiresIn: '5mins'
-                        },
-                        function(err, token){
-                            if(err){
-                                return res.status(500).json({
-                                    messsage: 'JWT Auth failed'
-                                })
-                            }else{
-                                return res.status(200).json({
-                                    message: 'Auth Successful',
-                                    token: token
-                                })
-                            }
-                    });
-                    
-                }else{
-                    return res.status(400).json({
-                        message: 'Auth Failed'
+            console.log(user);
+            if(user){
+                if(user.length < 1){
+                    return res.status(401).json({
+                            message: 'Auth Failed'
                     })
                 }
-            })
+                bcrypt.compare(password, user.password, function(err, response){
+                    if(err){
+                        return res.status(500).json({
+                            message: 'Auth Failed'
+                        })
+                    }else if(response){
+                        jwt
+                            .sign({
+                                email: user.email,
+                                id: user._id
+                            },
+                            process.env.JWT_KEY,
+                            {
+                                expiresIn: '5mins'
+                            },
+                            function(err, token){
+                                if(err){
+                                    return res.status(500).json({
+                                        messsage: 'JWT Auth failed'
+                                    })
+                                }else{
+                                    return res.status(200).json({
+                                        message: 'Auth Successful',
+                                        user: user,
+                                        token: token
+                                    })
+                                }
+                        });
+                        
+                    }else{
+                        return res.status(400).json({
+                            message: 'Auth Failed'
+                        })
+                    }
+                })
+            }else if(!user){
+                res.status(404).json({message: 'User Credential doesnt match'})
+            }
         })
         .catch(function(error){
             console.log(error);
