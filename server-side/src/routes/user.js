@@ -30,7 +30,7 @@ app.post('/signup', function(req,res){
                         console.log(hash);
                         let user = new Users({
                             _id: new mongoose.Types.ObjectId,
-                            name: name,
+                            name: name.toLowerCase(),
                             email: email,
                             password: hash
                         });
@@ -114,7 +114,34 @@ app.post('/login', function(req, res){
         })
 })
 
-app.get('/:userId', checkAuth, function(req, res){
+app.get('/name/:userName', function(req,res){
+    let name = req.params.userName.toLowerCase();
+    Users
+        .findOne({name: name})
+        .then(function(response){
+            if(response){
+                if(response.length < 1){
+                    res.status(404).json({message: '404 User Not found'})
+                }
+                console.log(response);
+                res.status(200).json({
+                    user: response
+                })
+            }else{
+                res.status(404).json({message: '404 User Not found'})
+            }
+
+        })
+        .catch(function(err){
+            console.log(err);
+            res.status(404).json({
+                message: '500 Server Error',
+                err: err
+            })
+        })
+})
+
+app.get('/id/:userId', function(req, res){
     let userId = req.params.userId;
     Users
         .findById(userId)
@@ -123,7 +150,7 @@ app.get('/:userId', checkAuth, function(req, res){
             console.log(req.params.userId)
             res.status(200).json({
                 message: 'UserID Found',
-                user: data
+                data
             })
         })
         .catch(function(err){

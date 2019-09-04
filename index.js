@@ -3,8 +3,12 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const userRoute = require('./server-side/src/routes/user');
+const conversationRoute = require('./server-side/src/routes/conversation');
+const friendlistRoute = require('./server-side/src/routes/friendlist');
 
 app.use('/user', userRoute);
+app.use('/conversation', conversationRoute);
+app.use('/friendlist', friendlistRoute);
 
 app.get('/', function(req, res){
     res.send('HEllow World');

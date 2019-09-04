@@ -2,21 +2,23 @@ const mongoose = require('mongoose');
 
 const conversationSchema = new mongoose.Schema({
     _id : mongoose.Schema.Types.ObjectId,
-    source_id: {
-        type: String,
+    from: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Users',
         required: true
     },
     message:{
         type: String,
         required: true
     },
-    destination_id: {
-        type: String,
+    to: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Users',
         required: true
     },
     added_date: {
-        type: new Date(),
-        required: true
+        type: Date,
+        default: Date.now
     }
 })
 
